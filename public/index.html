@@ -8,6 +8,10 @@
 
 <script type="text/javascript">
 
+if (!('serviceWorker' in navigator)) {
+  throw("Service workers are not supported");
+}
+
 Notification.requestPermission();
 
 navigator.serviceWorker.register('sw.js').then(function(reg){
@@ -18,26 +22,16 @@ navigator.serviceWorker.register('sw.js').then(function(reg){
   } else if(reg.active) {
     console.log('Service worker active');
   }
-  initialiseState(reg);
-});
 
-function initialiseState(reg) {
-  // Are Notifications supported in the service worker?
   if (!(reg.showNotification)) {
-    console.log('Notifications aren\'t supported on service workers.');
-    useNotifications = false;
-  } else {
-    useNotifications = true;
-  }
-
-  // Check the current Notification permission.
-  // If its denied, it's a permanent block until the
-  // user changes the permission
-  if (Notification.permission === 'denied') {
-    console.log('The user has blocked notifications.');
+    throw('Notifications aren\'t supported on service workers.');
     return;
   }
-}
+
+  if (Notification.permission === 'denied') {
+    throw('The user has blocked notifications.');
+  }
+});
 
 </script>
 
