@@ -1,0 +1,45 @@
+<html>
+<head>
+  <title>Service Workers + Pusher</title>
+</head>
+<body>
+
+<h1>Service Worker Demo</h1>
+
+<script type="text/javascript">
+
+Notification.requestPermission();
+
+navigator.serviceWorker.register('sw.js').then(function(reg){
+  if(reg.installing) {
+    console.log('Service worker installing');
+  } else if(reg.waiting) {
+    console.log('Service worker installed');
+  } else if(reg.active) {
+    console.log('Service worker active');
+  }
+  initialiseState(reg);
+});
+
+function initialiseState(reg) {
+  // Are Notifications supported in the service worker?
+  if (!(reg.showNotification)) {
+    console.log('Notifications aren\'t supported on service workers.');
+    useNotifications = false;
+  } else {
+    useNotifications = true;
+  }
+
+  // Check the current Notification permission.
+  // If its denied, it's a permanent block until the
+  // user changes the permission
+  if (Notification.permission === 'denied') {
+    console.log('The user has blocked notifications.');
+    return;
+  }
+}
+
+</script>
+
+</body>
+</html>
